@@ -1,0 +1,30 @@
+{
+  "metadata": {
+    "category": "repository_metadata",
+    "explanation": "Allows access to basic repository information such as names, visibility, and structure. Does not provide access to file contents."
+  },
+  "contents": {
+    "category": "repository_content",
+    "explanation": "Allows reading repository files and commit history. If write access is granted, files may be modified."
+  },
+  "issues": {
+    "category": "collaboration_workflow",
+    "explanation": "Allows interaction with issues and related comments, labels, and milestones."
+  },
+  "pull_requests": {
+    "category": "collaboration_workflow",
+    "explanation": "Allows interaction with pull requests, reviews, and related discussions."
+  },
+  "actions": {
+    "category": "automation_ci_cd",
+    "explanation": "Allows access to automation workflows and related build or deployment processes."
+  },
+  "secrets": {
+    "category": "automation_ci_cd",
+    "explanation": "Allows access to sensitive configuration values used in automation workflows."
+  },
+  "administration": {
+    "category": "security_administration",
+    "explanation": "Allows management of repository settings and administrative controls."
+  }
+}

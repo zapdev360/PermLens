@@ -1,0 +1,20 @@
+{
+  "data_categories": [
+    {
+      "key": "repository_metadata",
+      "label": "Repository metadata",
+      "sensitivity": "low"
+    }
+  ],
+  "overall_sensitivity": "low",
+  "permissions": [
+    {
+      "name": "metadata",
+      "access": "read"
+    }
+  ],
+  "notes": [
+    "Based on publicly available GitHub App permission metadata.",
+    "Does not inspect runtime behavior or private repositories."
+  ]
+}
