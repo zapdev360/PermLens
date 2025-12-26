@@ -6,7 +6,10 @@ function buildLabel(perms) {
 
   perms.forEach(({ name }) => {
     const perm = permissions[name];
-    if (!perm) return;
+    if (!perm) {
+      used.add("unknown");
+      return;
+    }
 
     const key = perm.category;
     used.add(key);
@@ -26,8 +29,8 @@ function buildLabel(perms) {
     overall_sensitivity: sensitivity,
     permissions: perms,
     notes: [
-      "Based on publicly available GitHub App permission metadata.",
-      "Does not inspect runtime behavior or private repositories.",
+      "Derived from declared GitHub App permissions.",
+      "Based on public metadata only; no runtime inspection.",
     ],
   };
 }

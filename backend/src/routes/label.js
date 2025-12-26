@@ -11,6 +11,10 @@ router.get("/app/:slug/label", async (_req, res) => {
       ([name, access]) => ({ name, access })
     );
 
+    if (perms.length === 0) {
+      return res.json(buildLabel([]));
+    }
+
     res.json(buildLabel(perms));
   } catch (err) {
     console.error(err.response?.data || err.message);

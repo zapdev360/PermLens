@@ -28,5 +28,10 @@
     "label": "Organization-level access",
     "sensitivity": "high",
     "description": "Permissions that apply across an organization rather than individual repositories."
+  },
+  "unknown": {
+    "label": "Unknown data access",
+    "sensitivity": "moderate",
+    "description": "Permissions not yet classified by PermLens."
   }
 }
