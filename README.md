@@ -102,6 +102,13 @@ A frontend interface is planned for a future release.
 - Does not store user, repository, or organization data
 
 
+## Branding
+
+The PermLens name, logo, and visual branding are **not** covered by the open-source license for this repository.
+
+Use of the PermLens name or logo in a way that suggests endorsement, affiliation, or official status requires explicit permission from the project author.
+
+
 ## License
 
 Released under the terms of [Apache License 2.0](LICENSE).
