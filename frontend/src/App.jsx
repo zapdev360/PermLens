@@ -1,18 +1,34 @@
+import { useEffect, useState } from "react";
+import { fetchAppLabel } from "./api";
+
 function App() {
+  const [data, setData] = useState(null);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    fetchAppLabel("permlens")
+      .then(setData)
+      .catch((err) => setError(err.message));
+  }, []);
+
   return (
     <main className="min-h-screen bg-slate-950 text-slate-100">
       <div className="max-w-4xl mx-auto px-6 pt-32">
-        <h1 className="text-4xl md:text-5xl font-semibold tracking-tight mb-4">
-          PermLens
-        </h1>
+        <h1 className="text-4xl font-semibold mb-6">PermLens</h1>
 
-        <p className="text-slate-400 text-lg max-w-2xl">
-          Human-readable visibility into GitHub App permissions and data access.
-        </p>
+        {error && (
+          <p className="text-red-400">Error: {error}</p>
+        )}
 
-        <div className="mt-10 text-sm text-slate-500">
-          Frontend under active development | API-backed
-        </div>
+        {data && (
+          <pre className="mt-6 bg-slate-900 p-4 rounded text-sm overflow-auto">
+            {JSON.stringify(data, null, 2)}
+          </pre>
+        )}
+
+        {!data && !error && (
+          <p className="text-slate-400">Loading privacy label…</p>
+        )}
       </div>
     </main>
   );
