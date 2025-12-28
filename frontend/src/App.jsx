@@ -1,34 +1,55 @@
 import { useEffect, useState } from "react";
-import { fetchAppLabel } from "./api";
+import { fetchLabel } from "./api/permlens";
+import AppHeader from "./components/AppHeader";
+import AppSearch from "./components/AppSearch";
+import LabelView from "./components/LabelView";
+import ErrorState from "./components/ErrorState";
 
 function App() {
-  const [data, setData] = useState(null);
+  const [label, setLabel] = useState(null);
   const [error, setError] = useState(null);
+  const [resolved, setResolved] = useState(true);
 
-  useEffect(() => {
-    fetchAppLabel("permlens")
-      .then(setData)
-      .catch((err) => setError(err.message));
-  }, []);
+  async function handleSearch(slug) {
+    const clean = slug.trim();
+
+    if (!clean) {
+      setLabel(null);
+      setResolved(true);
+      setError("Enter a GitHub App slug to inspect.");
+      return;
+    }
+
+    try {
+      setError(null);
+
+      const data = await fetchLabel(slug);
+
+      setResolved(data.resolved);
+      setLabel(data.label);
+    } catch (err) {
+      setLabel(null);
+      setResolved(true);
+      setError(err.message);
+    }
+  }
 
   return (
-    <main className="min-h-screen bg-slate-950 text-slate-100">
-      <div className="max-w-4xl mx-auto px-6 pt-32">
-        <h1 className="text-4xl font-semibold mb-6">PermLens</h1>
+    <main className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 text-white">
+      <div className="mx-auto max-w-3xl px-6 py-16">
+        <AppHeader />
 
-        {error && (
-          <p className="text-red-400">Error: {error}</p>
+        <AppSearch onSubmit={handleSearch} />
+
+        {error && <ErrorState message={error} />}
+
+        {!resolved && !error && (
+          <div className="mt-4 rounded bg-yellow-500/10 px-4 py-2 text-xs text-yellow-300">
+            App could not be resolved! Showing permissions for the PermLens GitHub App instead.
+          </div>
         )}
 
-        {data && (
-          <pre className="mt-6 bg-slate-900 p-4 rounded text-sm overflow-auto">
-            {JSON.stringify(data, null, 2)}
-          </pre>
-        )}
-
-        {!data && !error && (
-          <p className="text-slate-400">Loading privacy label…</p>
-        )}
+        {label && <LabelView label={label} />}
       </div>
     </main>
   );

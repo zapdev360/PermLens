@@ -1,24 +1,30 @@
 const express = require("express");
 const router = express.Router();
 const { buildLabel } = require("../services/privacyLabel");
-const { fetchApp } = require("../services/githubApp");
+const { fetchAppBySlug, fetchOwnApp } = require("../services/githubApp");
 
-router.get("/app/:slug/label", async (_req, res) => {
+router.get("/app/:slug/label", async (req, res) => {
+  const { slug } = req.params;
+
   try {
-    const app = await fetchApp();
+    let app = await fetchAppBySlug(slug);
+    let resolved = true;
+
+    if (!app) {
+      app = await fetchOwnApp();
+      resolved = false;
+    }
 
     const perms = Object.entries(app.permissions || {}).map(
       ([name, access]) => ({ name, access })
     );
 
-    if (perms.length === 0) {
-      return res.json(buildLabel([]));
-    }
-
-    res.json(buildLabel(perms));
+    res.json({
+      resolved,
+      label: buildLabel(perms),
+    });
   } catch (err) {
     console.error(err.response?.data || err.message);
-
     res.status(500).json({
       error: "Failed to fetch GitHub App metadata",
     });

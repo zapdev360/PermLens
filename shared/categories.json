@@ -4,34 +4,44 @@
     "sensitivity": "low",
     "description": "Basic information about repositories without access to file contents."
   },
-  "repository_content": {
-    "label": "Repository content",
+  "repository_contents": {
+    "label": "Repository contents",
     "sensitivity": "high",
     "description": "Files, commits, and other source code content within repositories."
   },
   "collaboration_workflow": {
     "label": "Collaboration & workflow",
     "sensitivity": "moderate",
-    "description": "Issues, pull requests, reviews, and collaboration features."
+    "description": "Issues, pull requests, reviews, comments, and collaboration features."
   },
   "automation_ci_cd": {
     "label": "Automation, CI/CD & configuration",
     "sensitivity": "high",
-    "description": "Build automation, workflows, deployments, and configuration values."
+    "description": "Build automation, workflows, deployments, and related configuration."
   },
-  "security_administration": {
-    "label": "Security & administration",
+  "security_alerts": {
+    "label": "Security alerts",
     "sensitivity": "high",
-    "description": "Security-related settings and administrative controls."
+    "description": "Security findings such as code scanning, Dependabot, and secret scanning alerts."
+  },
+  "packages_artifacts": {
+    "label": "Packages & artifacts",
+    "sensitivity": "moderate",
+    "description": "Published packages, build artifacts, and related metadata."
   },
   "organization_access": {
     "label": "Organization-level access",
     "sensitivity": "high",
     "description": "Permissions that apply across an organization rather than individual repositories."
   },
+  "user_account_data": {
+    "label": "User account data",
+    "sensitivity": "high",
+    "description": "User profile information and account-level data."
+  },
   "unknown": {
-    "label": "Unknown data access",
-    "sensitivity": "moderate",
+    "label": "Unclassified permissions",
+    "sensitivity": "low",
     "description": "Permissions not yet classified by PermLens."
   }
 }

@@ -1,6 +1,10 @@
 const { categories, permissions } = require("../utils/loadShared");
 
 function buildLabel(perms) {
+  if (!Array.isArray(perms)) {
+    throw new Error("Invalid permissions input");
+  }
+
   const used = new Set();
   let sensitivity = "low";
 
