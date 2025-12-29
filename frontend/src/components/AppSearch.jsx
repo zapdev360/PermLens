@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-function AppSearch({ onSubmit }) {
+function AppSearch({ onSubmit, loading }) {
   const [value, setValue] = useState("");
 
   return (
@@ -20,9 +20,10 @@ function AppSearch({ onSubmit }) {
       />
       <button
         type="submit"
-        className="rounded bg-indigo-600 px-4 py-2 text-sm font-medium hover:bg-indigo-500"
+        disabled={loading}
+        className="rounded bg-indigo-600 px-4 py-2 text-sm font-medium hover:bg-indigo-500 disabled:opacity-50"
       >
-        Inspect
+        {loading ? "Inspecting…" : "Inspect"}
       </button>
     </form>
   );
