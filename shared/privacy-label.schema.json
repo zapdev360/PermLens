@@ -1,20 +1,24 @@
 {
-  "data_categories": [
-    {
-      "key": "repository_metadata",
-      "label": "Repository metadata",
-      "sensitivity": "low"
-    }
-  ],
-  "overall_sensitivity": "low",
-  "permissions": [
-    {
-      "name": "metadata",
-      "access": "read"
-    }
-  ],
-  "notes": [
-    "Based on publicly available GitHub App permission metadata.",
-    "Does not inspect runtime behavior or private repositories."
-  ]
+  "resolved": true,
+  "label": {
+    "data_categories": [
+      {
+        "key": "repository_metadata",
+        "label": "Repository metadata",
+        "sensitivity": "low",
+        "description": "Basic information about repositories without access to file contents."
+      }
+    ],
+    "overall_sensitivity": "low",
+    "permissions": [
+      {
+        "name": "metadata",
+        "access": "read"
+      }
+    ],
+    "notes": [
+      "Derived from declared GitHub App permissions.",
+      "Based on public GitHub metadata only; no runtime or code inspection."
+    ]
+  }
 }

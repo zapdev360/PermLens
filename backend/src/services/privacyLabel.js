@@ -34,7 +34,7 @@ function buildLabel(perms) {
     permissions: perms,
     notes: [
       "Derived from declared GitHub App permissions.",
-      "Based on public metadata only; no runtime inspection.",
+      "Based on public GitHub metadata only; no runtime or code inspection.",
     ],
   };
 }
