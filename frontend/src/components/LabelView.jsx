@@ -1,4 +1,4 @@
-function LabelView({ label }) {
+function LabelView({ label, meta }) {
   const styles =
     {
       low: "text-emerald-400 bg-emerald-500/10",
@@ -6,8 +6,29 @@ function LabelView({ label }) {
       high: "text-rose-400 bg-rose-500/10",
     }[label.overall_sensitivity] || "text-gray-300";
 
+  let cacheMinutesAgo = null;
+
+  if (meta?.cache?.hit && meta.cache.cached_at) {
+    const cachedAt = new Date(meta.cache.cached_at);
+    const diffMs = Date.now() - cachedAt.getTime();
+    cacheMinutesAgo = Math.max(1, Math.floor(diffMs / 60000));
+  }
+
   return (
-    <section className="mt-6 rounded-xl bg-white/5 p-6">
+    <section className="relative mt-6 rounded-xl bg-white/5 p-6">
+      {meta?.cache?.hit && (
+        <div className="absolute right-4 top-6 group">
+          <div className="cursor-pointer rounded-full bg-white/10 px-2 py-1 text-xs text-gray-300">
+            ⓘ
+          </div>
+
+          <div className="pointer-events-none absolute right-0 top-8 w-56 rounded bg-black/90 px-3 py-2 text-xs text-gray-200 opacity-0 shadow-lg transition-opacity group-hover:opacity-100">
+            Showing a cached privacy label.<br />
+            Cached {cacheMinutesAgo} minute{cacheMinutesAgo !== 1 && "s"} ago.
+          </div>
+        </div>
+      )}
+
       <header className="mb-6">
         <h2 className="text-xl font-semibold">Privacy Label</h2>
         <div

@@ -7,7 +7,7 @@ function AppSearch({ onSubmit, loading }) {
     <form
       onSubmit={(e) => {
         e.preventDefault();
-        onSubmit(value.trim());
+        onSubmit(value);
       }}
       className="mt-6 flex gap-2"
     >

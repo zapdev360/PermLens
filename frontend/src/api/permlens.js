@@ -7,10 +7,16 @@ if (!API_URL) {
 export async function fetchLabel(slug) {
   const res = await fetch(`${API_URL}/api/app/${slug}/label`);
 
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({}));
-    throw new Error(err.error || `Request failed (${res.status})`);
+  let data;
+  try {
+    data = await res.json();
+  } catch {
+    throw new Error("Invalid API response");
   }
 
-  return res.json();
+  if (!res.ok) {
+    throw new Error(data?.error || `Request failed (${res.status})`);
+  }
+
+  return data;
 }

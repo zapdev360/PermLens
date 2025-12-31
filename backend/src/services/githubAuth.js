@@ -1,6 +1,8 @@
 const jwt = require("jsonwebtoken");
 const axios = require("axios");
 
+const USER_AGENT = process.env.GH_USER_AGENT || "PermLens";
+
 function createAppJWT() {
   const now = Math.floor(Date.now() / 1000);
   const privateKey = process.env.GH_APP_KEY.replace(/\\n/g, "\n");
@@ -26,7 +28,7 @@ async function getInstallationToken() {
       headers: {
         Authorization: `Bearer ${token}`,
         Accept: "application/vnd.github+json",
-        "User-Agent": "PermLens",
+        "User-Agent": USER_AGENT,
       },
     }
   );

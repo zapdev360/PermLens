@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { fetchLabel } from "./api/permlens";
 import AppHeader from "./components/AppHeader";
 import AppSearch from "./components/AppSearch";
@@ -7,8 +7,8 @@ import ErrorState from "./components/ErrorState";
 
 function App() {
   const [label, setLabel] = useState(null);
+  const [meta, setMeta] = useState(null);
   const [error, setError] = useState(null);
-  const [resolved, setResolved] = useState(true);
   const [loading, setLoading] = useState(false);
 
   async function handleSearch(slug) {
@@ -16,30 +16,36 @@ function App() {
 
     if (!clean) {
       setLabel(null);
-      setResolved(true);
+      setMeta(null);
       setError("Enter a GitHub App slug to inspect.");
       return;
     }
 
+    setError(null);
+    setLabel(null);
+    setMeta(null);
+    setLoading(true);
+
+    const start = Date.now();
+
     try {
-      setError(null);
-      setLoading(true);
+      const data = await fetchLabel(clean);
 
-      const start = Date.now();
-      const data = await fetchLabel(slug);
-
-      const elapsed = Date.now() - start;
-      if (elapsed < 1000) {
-        await new Promise((r) => setTimeout(r, 1000 - elapsed));
-      }
-
-      setResolved(data.resolved);
-      setLabel(data.label);
+      setLabel(data.label || null);
+      setMeta({
+        resolved: data.resolved,
+        fallback: data.fallback,
+        rateLimits: data.rate_limits,
+        api: data.api,
+        cache: data.cache,
+      });
     } catch (err) {
-      setLabel(null);
-      setResolved(true);
       setError(err.message);
     } finally {
+      const elapsed = Date.now() - start;
+      if (elapsed < 800) {
+        await new Promise((r) => setTimeout(r, 800 - elapsed));
+      }
       setLoading(false);
     }
   }
@@ -49,23 +55,30 @@ function App() {
       <div className="mx-auto max-w-3xl px-6 py-16">
         <AppHeader />
 
-        <AppSearch onSubmit={handleSearch} loading={loading}/>
+        <AppSearch onSubmit={handleSearch} loading={loading} />
 
         {loading && (
-          <div className="mt-4 text-sm text-gray-400">
+          <div className="mt-4 text-sm text-blue-300">
             Loading privacy label…
           </div>
         )}
 
         {error && <ErrorState message={error} />}
 
-        {!resolved && !error && (
+        {meta?.fallback && !meta?.rateLimits?.authenticated && (
           <div className="mt-4 rounded bg-yellow-500/10 px-4 py-2 text-xs text-yellow-300">
-            App could not be resolved! Showing permissions for the PermLens GitHub App instead.
+            App could not be resolved! Showing permissions for the PermLens GitHub App.
           </div>
         )}
 
-        {label && <LabelView label={label} />}
+        {meta?.rateLimits?.unauthenticated &&
+         meta?.rateLimits?.authenticated && (
+          <div className="mt-4 rounded bg-red-500/10 px-4 py-2 text-xs text-red-300">
+            GitHub API rate limit exceeded! Please try again later.
+          </div>
+        )}
+
+        {label && <LabelView label={label} meta={meta}/>}
       </div>
     </main>
   );
