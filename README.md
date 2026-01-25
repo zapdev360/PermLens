@@ -15,6 +15,26 @@ Permission transparency and privacy labeling for GitHub Apps.
 PermLens helps developers and reviewers understand what data a GitHub App *declares* access to, using publicly available metadata.
 
 
+## Table of Contents
+
+- [ℹ What is PermLens?](#ℹ-what-is-permlens)
+- [✅ What PermLens does](#-what-permlens-does)
+- [🚫 What PermLens does NOT do](#-what-permlens-does-not-do)
+- [❓ How it works](#-how-it-works)
+- [⚙ API](#-api)
+  - [Get privacy label for a GitHub App](#get-privacy-label-for-a-github-app)
+- [📘 API Response Reference](#-api-response-reference)
+  - [Response fields](#response-fields)
+  - [Resolution behavior](#resolution-behavior)
+  - [Cache behavior](#cache-behavior)
+  - [API request behavior](#api-request-behavior)
+  - [Rate limiting behavior](#rate-limiting-behavior)
+- [🚧 Project status](#-project-status)
+- [🔐 Security and privacy](#-security-and-privacy)
+- [🏷️ Branding](#️-branding)
+- [⚖️ License](#️-license)
+
+
 ## ℹ What is PermLens?
 
 PermLens provides human-readable visibility into **GitHub App permissions** and the types of data an app may access.
@@ -58,10 +78,7 @@ PermLens reflects **what an app declares**, not what it actually does at runtime
 4. Computes an overall sensitivity level
 5. Returns a privacy-label-style summary
 
-If an app cannot be resolved by slug, PermLens safely falls back to
-its own declared permissions. In this case, PermLens authenticates
-as a GitHub App using JWT to fetch its metadata and explicitly
-reports the resolution status in the response.
+If an app cannot be resolved by slug, PermLens safely falls back to its own declared permissions. In this case, PermLens authenticates as a GitHub App using JWT to fetch its metadata and explicitly reports the resolution status in the response.
 
 Only public GitHub App metadata is used.
 
@@ -74,48 +91,107 @@ Only public GitHub App metadata is used.
 GET /api/app/:slug/label
 ```
 
-Example response:
+Response schema:
 
 ```json
 {
-  "resolved": true,
+  "resolved": "boolean",
+  "fallback": "boolean",
+  "rate_limits": {
+    "unauthenticated": "boolean",
+    "authenticated": "boolean"
+  },
+  "api": {
+    "unauthenticated_hit": "boolean",
+    "authenticated_hit": "boolean"
+  },
+  "cache": {
+    "hit": "boolean",
+    "cached_at": "ISO_8601 string | null"
+  },
   "label": {
     "data_categories": [
       {
-        "key": "repository_metadata",
-        "label": "Repository metadata",
-        "sensitivity": "low",
-        "description": "Basic information about repositories without access to file contents."
+        "key": "string",
+        "label": "string",
+        "sensitivity": "low | moderate | high",
+        "description": "string"
       }
     ],
-    "overall_sensitivity": "low",
+    "overall_sensitivity": "low | moderate | high",
     "permissions": [
       {
-        "name": "metadata",
-        "access": "read"
+        "name": "string",
+        "access": "read | write"
       }
     ],
-    "notes": [
-      "Derived from declared GitHub App permissions.",
-      "Based on public GitHub metadata only; no runtime or code inspection."
-    ]
+    "notes": ["string"]
   }
 }
 ```
+
+
+## 📘 API Response Reference
+
+### Response fields
+
+| Field | Description | Possible values |
+|------|-------------|-----------------|
+| `resolved` | Whether the requested GitHub App slug was successfully resolved via the GitHub API | `true` \| `false` |
+| `fallback` | Whether PermLens fell back to its own GitHub App permissions | `true` \| `false` |
+| `rate_limits.unauthenticated` | Whether the unauthenticated GitHub API rate limit was exceeded | `true` \| `false` |
+| `rate_limits.authenticated` | Whether the GitHub App–authenticated API rate limit was exceeded | `true` \| `false` |
+| `api.unauthenticated_hit` | Whether an unauthenticated GitHub API request was made | `true` \| `false` |
+| `api.authenticated_hit` | Whether a GitHub App–authenticated request was made (typically fallback) | `true` \| `false` |
+| `cache.hit` | Whether the response was served from cache | `true` \| `false` |
+| `cache.cached_at` | Timestamp of cached response generation | ISO 8601 timestamp \| `null` |
+| `label.data_categories` | Data access categories derived from declared permissions | array of objects |
+| `label.data_categories[].key` | Internal category identifier | string |
+| `label.data_categories[].label` | Human-readable category name | string |
+| `label.data_categories[].sensitivity` | Sensitivity level for the category | `low` \| `moderate` \| `high` |
+| `label.data_categories[].description` | Description of the category | string |
+| `label.overall_sensitivity` | Highest sensitivity level across all categories | `low` \| `moderate` \| `high` |
+| `label.permissions` | Declared GitHub App permissions | array of `{ name, access }` |
+| `label.permissions[].name` | Permission name | string |
+| `label.permissions[].access` | Permission access level | `read` \| `write` |
+| `label.notes` | Informational notes about label generation | array of strings |
+| `error` | Error message when label generation fails | string \| absent |
+
+### Resolution behavior
+
+- `resolved: true`, `fallback: false` -> requested app resolved by slug
+- `resolved: false`, `fallback: true` -> unresolved slug; PermLens fallback used
+- `resolved: false`, `fallback: false` -> unable to resolve and fallback failed (often rate limit)
+
+### Cache behavior
+
+- `cache.hit: true` -> served from in-memory cache
+- `cache.hit: false` -> fresh GitHub API data
+- `cache.cached_at` is present only when `cache.hit` is `true`
+
+### API request behavior
+
+- `api.unauthenticated_hit: true` -> public GitHub API request was attempted
+- `api.authenticated_hit: true` -> authenticated fallback request was attempted
+- if `cache.hit: true`, then both API hit flags are `false`
+
+### Rate limiting behavior
+
+- `rate_limits.unauthenticated: true` -> public GitHub API rate limit hit
+- `rate_limits.authenticated: true` -> GitHub App authenticated rate limit hit
+- if both are `true`, no app data can be fetched
 
 
 ## 🚧 Project status
 
 PermLens is in **early development**.
 
-Version **v0.2.0** introduces:
+Version **v0.3.0** introduces:
 
-- A public web-based frontend
-- GitHub App resolution by marketplace slug
-- Expanded permission taxonomy
-- Explicit resolution status in API responses
-- Transparent fallback behavior for unresolved apps
-- Clear sensitivity labeling and improved privacy label presentation
+- In-memory caching for label lookups
+- Explicit cache and API metadata in response payloads
+- Clear unauthenticated vs authenticated rate limit reporting
+- Improved frontend UX for cached, fallback, and rate-limited cases
 
 APIs and schemas may evolve as the project matures.
 

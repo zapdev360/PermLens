@@ -1,6 +1,6 @@
 {
   "name": "permlens-backend",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Backend API for resolving GitHub App permissions and generating privacy-label-style summaries using public GitHub metadata",
   "keywords": [
     "github",

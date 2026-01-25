@@ -67,7 +67,7 @@ function App() {
 
         {meta?.fallback && !meta?.rateLimits?.authenticated && (
           <div className="mt-4 rounded bg-yellow-500/10 px-4 py-2 text-xs text-yellow-300">
-            App could not be resolved! Showing permissions for the PermLens GitHub App.
+            App could not be resolved! Showing permissions for the PermLens GitHub App instead.
           </div>
         )}
 

@@ -1,24 +1,34 @@
 {
-  "resolved": true,
+  "resolved": "boolean",
+  "fallback": "boolean",
+  "rate_limits": {
+    "unauthenticated": "boolean",
+    "authenticated": "boolean"
+  },
+  "api": {
+    "unauthenticated_hit": "boolean",
+    "authenticated_hit": "boolean"
+  },
+  "cache": {
+    "hit": "boolean",
+    "cached_at": "ISO_8601 string | null"
+  },
   "label": {
     "data_categories": [
       {
-        "key": "repository_metadata",
-        "label": "Repository metadata",
-        "sensitivity": "low",
-        "description": "Basic information about repositories without access to file contents."
+        "key": "string",
+        "label": "string",
+        "sensitivity": "low | moderate | high",
+        "description": "string"
       }
     ],
-    "overall_sensitivity": "low",
+    "overall_sensitivity": "low | moderate | high",
     "permissions": [
       {
-        "name": "metadata",
-        "access": "read"
+        "name": "string",
+        "access": "read | write"
       }
     ],
-    "notes": [
-      "Derived from declared GitHub App permissions.",
-      "Based on public GitHub metadata only; no runtime or code inspection."
-    ]
+    "notes": ["string"]
   }
 }
