@@ -3,11 +3,14 @@
   "outputDirectory": "frontend/dist",
   "functions": {
     "api/[...path].js": {
-      "includeFiles": "shared/**"
+      "includeFiles": [
+        "shared/**",
+        "frontend/public/favicon.svg",
+        "frontend/public/favicon.ico"
+      ]
     }
   },
   "routes": [
-    { "handle": "filesystem" },
     { "src": "/api/(.*)", "dest": "/api/[...path].js" },
     { "src": "/(.*)", "dest": "/api/[...path].js" }
   ]
