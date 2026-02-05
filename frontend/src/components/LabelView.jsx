@@ -1,4 +1,6 @@
-function LabelView({ label, meta }) {
+const API_URL = import.meta.env.VITE_API_URL;
+
+function LabelView({ label, meta, slug }) {
   const styles =
     {
       low: "text-emerald-400 bg-emerald-500/10",
@@ -16,16 +18,30 @@ function LabelView({ label, meta }) {
 
   return (
     <section className="relative mt-6 rounded-xl bg-white/5 p-6">
-      {meta?.cache?.hit && (
-        <div className="absolute right-4 top-6 group">
-          <div className="cursor-pointer rounded-full bg-white/10 px-2 py-1 text-xs text-gray-300">
-            ⓘ
-          </div>
+      {slug && (
+        <div className="absolute right-4 top-6 flex items-start gap-2">
+          {meta?.cache?.hit && (
+            <div className="group relative">
+              <div className="cursor-pointer rounded-full bg-white/10 px-2 py-1 text-xs text-gray-300">
+                ⓘ
+              </div>
 
-          <div className="pointer-events-none absolute right-0 top-8 w-56 rounded bg-black/90 px-3 py-2 text-xs text-gray-200 opacity-0 shadow-lg transition-opacity group-hover:opacity-100">
-            Showing a cached privacy label.<br />
-            Cached {cacheMinutesAgo} minute{cacheMinutesAgo !== 1 && "s"} ago.
-          </div>
+              <div className="pointer-events-none absolute right-0 top-8 w-56 rounded bg-black/90 px-3 py-2 text-xs text-gray-200 opacity-0 shadow-lg transition-opacity group-hover:opacity-100">
+                Showing a cached privacy label.<br />
+                Cached {cacheMinutesAgo} minute{cacheMinutesAgo !== 1 && "s"} ago.
+              </div>
+            </div>
+          )}
+
+          <a
+            href={`${API_URL}/api/app/${slug}/label`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="rounded bg-white/10 px-2 py-1 text-xs text-gray-300 hover:bg-white/20"
+            title="View raw JSON response"
+          >
+            View JSON
+          </a>
         </div>
       )}
 
