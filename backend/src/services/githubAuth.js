@@ -2,8 +2,19 @@ const jwt = require("jsonwebtoken");
 const axios = require("axios");
 
 const USER_AGENT = process.env.GH_USER_AGENT || "PermLens";
+const REQUIRED_ENV = ["GH_APP_KEY", "GH_APP_ID", "GH_INSTALL_ID"];
+
+function requireAppEnv() {
+  const missing = REQUIRED_ENV.filter((key) => !process.env[key]);
+  if (missing.length) {
+    throw new Error(
+      `Missing GitHub App credentials: ${missing.join(", ")}`
+    );
+  }
+}
 
 function createAppJWT() {
+  requireAppEnv();
   const now = Math.floor(Date.now() / 1000);
   const privateKey = process.env.GH_APP_KEY.replace(/\\n/g, "\n");
 
@@ -19,6 +30,7 @@ function createAppJWT() {
 }
 
 async function getInstallationToken() {
+  requireAppEnv();
   const token = createAppJWT();
 
   const res = await axios.post(
