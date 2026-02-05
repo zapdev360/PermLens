@@ -10,9 +10,11 @@ function App() {
   const [meta, setMeta] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [slug, setSlug] = useState(null);
 
   async function handleSearch(slug) {
     const clean = slug.trim();
+    setSlug(clean);
 
     if (!clean) {
       setLabel(null);
@@ -78,7 +80,7 @@ function App() {
           </div>
         )}
 
-        {label && <LabelView label={label} meta={meta}/>}
+        {label && <LabelView label={label} meta={meta} slug={slug} />}
       </div>
     </main>
   );
