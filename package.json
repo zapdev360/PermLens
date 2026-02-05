@@ -1,0 +1,23 @@
+{
+  "name": "permlens",
+  "private": true,
+  "version": "0.3.0",
+  "description": "PermLens monorepo",
+  "license": "Apache-2.0",
+  "author": "Diptodeep Biswas",
+  "type": "commonjs",
+  "engines": {
+    "node": ">=18"
+  },
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
+  "scripts": {
+    "dev": "npm --prefix backend run dev",
+    "dev:frontend": "npm --prefix frontend run dev",
+    "start": "npm --prefix backend run start",
+    "build": "npm --prefix frontend run build",
+    "lint": "npm --prefix frontend run lint"
+  }
+}

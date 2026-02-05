@@ -16,6 +16,10 @@ function buildLabel(perms) {
     }
 
     const key = perm.category;
+     if (!key || !categories[key]) {
+      used.add("unknown");
+      return;
+    }
     used.add(key);
 
     const level = categories[key].sensitivity;

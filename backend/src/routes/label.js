@@ -69,9 +69,21 @@ router.get("/app/:slug/label", async (req, res) => {
 
       if (status === 403 && message.includes("rate limit")) {
         rateLimits.authenticated = true;
+
+        return res.status(429).json({
+          resolved: false,
+          fallback: false,
+          rate_limits: rateLimits,
+          api: apiHits,
+          cache: {
+            hit: false,
+            cached_at: null,
+          },
+          error: "GitHub API rate limit exceeded",
+        });
       }
 
-      return res.json({
+      return res.status(500).json({
         resolved: false,
         fallback: false,
         rate_limits: rateLimits,
@@ -80,7 +92,7 @@ router.get("/app/:slug/label", async (req, res) => {
           hit: false,
           cached_at: null,
         },
-        error: "GitHub API rate limit exceeded",
+        error: authErr.message || "Failed to authenticate with GitHub API",
       });
     }
   } else {

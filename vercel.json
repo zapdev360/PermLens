@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "functions": {
+    "api/[...path].js": {
+      "includeFiles": "shared/**"
+    }
+  },
+  "routes": [
+    { "src": "/api/(.*)", "dest": "/api/[...path].js" },
+    { "src": "/(.*)", "dest": "/api/[...path].js" }
+  ]
+}
