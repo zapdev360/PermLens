@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const path = require("path");
+const fs = require("fs");
 
 const app = express();
 
@@ -28,11 +29,19 @@ const FAVICON_ICO = path.resolve(
 );
 
 app.get("/favicon.ico", (_req, res) => {
-  res.sendFile(FAVICON_ICO);
+  if (fs.existsSync(FAVICON_ICO)) {
+    return res.sendFile(FAVICON_ICO);
+  }
+
+  return res.status(204).end();
 });
 
 app.get("/favicon.svg", (_req, res) => {
-  res.sendFile(FAVICON_SVG);
+  if (fs.existsSync(FAVICON_SVG)) {
+    return res.sendFile(FAVICON_SVG);
+  }
+
+  return res.status(204).end();
 });
 
 app.get("/", (_req, res) => {
