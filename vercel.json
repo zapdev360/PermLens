@@ -3,7 +3,7 @@
   "outputDirectory": "frontend/dist",
   "functions": {
     "api/[...path].js": {
-      "includeFiles": "shared/**,frontend/public/favicon.svg,frontend/public/favicon.ico"
+      "includeFiles": "shared/**"
     }
   },
   "routes": [
