@@ -40,6 +40,7 @@ function App() {
         rateLimits: data.rate_limits,
         api: data.api,
         cache: data.cache,
+        app: data.app,
       });
     } catch (err) {
       setError(err.message);

@@ -126,6 +126,20 @@ router.get("/app/:slug/label", async (req, res) => {
       hit: false,
       cached_at: null,
     },
+    app: {
+      id: app.id,
+      client_id: app.client_id,
+      slug: app.slug,
+      name: app.name,
+      html_url: app.html_url,
+      owner: app.owner
+        ? {
+            login: app.owner.login,
+            id: app.owner.id,
+            type: app.owner.type,
+          }
+        : null,
+    },
     label: buildLabel(perms),
   };
 
