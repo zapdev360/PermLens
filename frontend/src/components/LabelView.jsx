@@ -17,9 +17,9 @@ function LabelView({ label, meta, slug }) {
   }
 
   return (
-    <section className="relative mt-6 rounded-xl bg-white/5 p-6">
+    <section className="relative mt-6 rounded-xl bg-white/5 p-4 sm:p-6">
       {slug && (
-        <div className="absolute right-4 top-6 flex flex-col items-end gap-3">
+        <div className="mb-4 flex flex-col items-start gap-3 sm:absolute sm:right-4 sm:top-6 sm:mb-0 sm:items-end [@media(max-height:700px)]:absolute [@media(max-height:700px)]:right-4 [@media(max-height:700px)]:top-6 [@media(max-height:700px)]:mb-0 [@media(max-height:700px)]:items-end">
           <div className="flex items-start gap-2">
             {meta?.cache?.hit && (
               <div className="group relative">
@@ -54,7 +54,7 @@ function LabelView({ label, meta, slug }) {
       )}
 
       <header className="mb-6">
-        <h2 className="text-xl font-semibold">Privacy Label</h2>
+        <h2 className="text-lg font-semibold sm:text-xl">Privacy Label</h2>
         <div
           className={`mt-2 inline-flex items-center rounded px-3 py-1 text-sm font-medium ${styles}`}
         >
@@ -66,7 +66,7 @@ function LabelView({ label, meta, slug }) {
         <h3 className="mb-2 text-sm font-semibold uppercase tracking-wide text-gray-400">
           Data categories
         </h3>
-        <ul className="space-y-3">
+        <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 [@media(max-height:700px)]:grid-cols-2">
           {label.data_categories.map((cat) => (
             <li key={cat.key} className="rounded bg-black/30 p-3">
               <div className="flex items-center justify-between">
@@ -87,7 +87,7 @@ function LabelView({ label, meta, slug }) {
         <h3 className="mb-2 text-sm font-semibold uppercase tracking-wide text-gray-400">
           Declared permissions
         </h3>
-        <ul className="grid grid-cols-2 gap-2 text-xs">
+        <ul className="grid grid-cols-1 gap-2 text-xs sm:grid-cols-2 [@media(max-height:700px)]:grid-cols-2">
           {label.permissions.map((p) => (
             <li
               key={p.name}
