@@ -9,19 +9,19 @@ function AppSearch({ onSubmit, loading }) {
         e.preventDefault();
         onSubmit(value);
       }}
-      className="mt-6 flex gap-2"
+      className="mt-6 flex flex-col gap-2 sm:flex-row"
     >
       <input
         type="text"
         placeholder="GitHub App slug (e.g. gitguardian)"
         value={value}
         onChange={(e) => setValue(e.target.value)}
-        className="flex-1 rounded bg-white/10 px-3 py-2 text-sm text-white placeholder:text-gray-400 focus:outline-none focus:ring"
+        className="w-full flex-1 rounded bg-white/10 px-3 py-2 text-sm text-white placeholder:text-gray-400 focus:outline-none focus:ring"
       />
       <button
         type="submit"
         disabled={loading}
-        className="rounded bg-indigo-600 px-4 py-2 text-sm font-medium hover:bg-indigo-500 disabled:opacity-50"
+        className="w-full rounded bg-indigo-600 px-4 py-2 text-sm font-medium hover:bg-indigo-500 disabled:opacity-50 sm:w-auto"
       >
         {loading ? "Inspecting…" : "Inspect"}
       </button>

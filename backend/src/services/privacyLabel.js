@@ -29,11 +29,26 @@ function buildLabel(perms) {
     }
   });
 
-  return {
-    data_categories: Array.from(used).map((key) => ({
+  const orderedCategories = Array.from(used)
+    .map((key) => ({
       key,
       ...categories[key],
-    })),
+    }))
+    .sort((a, b) => {
+      if (a.key === "unknown") return 1;
+      if (b.key === "unknown") return -1;
+
+      const order = {
+        high: 0,
+        moderate: 1,
+        low: 2,
+      };
+
+      return (order[a.sensitivity] ?? 99) - (order[b.sensitivity] ?? 99);
+    });
+
+  return {
+    data_categories: orderedCategories,
     overall_sensitivity: sensitivity,
     permissions: perms,
     notes: [
