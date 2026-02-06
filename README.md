@@ -7,7 +7,6 @@
   <img src="https://img.shields.io/github/license/zapdev360/PermLens?style=for-the-badge" alt="Repo license" >
 </p>
 
-
 # PermLens 🔍
 
 Permission transparency and privacy labeling for GitHub Apps.
@@ -23,13 +22,19 @@ PermLens helps developers and reviewers understand what data a GitHub App *decla
 - [❓ How it works](#-how-it-works)
 - [⚙ API](#-api)
   - [Get privacy label for a GitHub App](#get-privacy-label-for-a-github-app)
+  - [Response schema](#response-schema)
 - [📘 API Response Reference](#-api-response-reference)
   - [Response fields](#response-fields)
   - [Resolution behavior](#resolution-behavior)
   - [Cache behavior](#cache-behavior)
   - [API request behavior](#api-request-behavior)
   - [Rate limiting behavior](#rate-limiting-behavior)
-- [🚧 Project status](#-project-status)
+- [🚀 Deployment](#-deployment)
+  - [Environment variables](#environment-variables)
+  - [Vercel backend API deployment](#vercel-backend-api-deployment)
+  - [Vercel frontend deployment](#vercel-frontend-deployment)
+- [🟢 Project status](#-project-status)
+- [✨ Release highlights (v1.0.0)](#-release-highlights-v100)
 - [🔐 Security and privacy](#-security-and-privacy)
 - [🏷️ Branding](#️-branding)
 - [⚖️ License](#️-license)
@@ -39,7 +44,7 @@ PermLens helps developers and reviewers understand what data a GitHub App *decla
 
 PermLens provides human-readable visibility into **GitHub App permissions** and the types of data an app may access.
 
-It generates a structured, privacy-label-style summary based on an app’s declared permissions, helping users reason about permission scope at a glance.
+It generates a structured, privacy-label-style summary based on an app's declared permissions, helping users reason about permission scope at a glance.
 
 PermLens is an **informational transparency tool**, not a security scanner.
 
@@ -73,10 +78,11 @@ PermLens reflects **what an app declares**, not what it actually does at runtime
 ## ❓ How it works
 
 1. Attempts to resolve a GitHub App by its marketplace slug
-2. Fetches the app’s declared permissions using the GitHub API
-3. Maps permissions to predefined data access categories
-4. Computes an overall sensitivity level
-5. Returns a privacy-label-style summary
+2. Fetches the app's declared permissions using the GitHub API
+3. Captures public app metadata (id, slug, name, owner)
+4. Maps permissions to predefined data access categories
+5. Computes an overall sensitivity level
+6. Returns a privacy-label-style summary
 
 If an app cannot be resolved by slug, PermLens safely falls back to its own declared permissions. In this case, PermLens authenticates as a GitHub App using JWT to fetch its metadata and explicitly reports the resolution status in the response.
 
@@ -91,7 +97,7 @@ Only public GitHub App metadata is used.
 GET /api/app/:slug/label
 ```
 
-Response schema:
+### Response schema
 
 ```json
 {
@@ -108,6 +114,18 @@ Response schema:
   "cache": {
     "hit": "boolean",
     "cached_at": "ISO_8601 string | null"
+  },
+  "app": {
+    "id": "number",
+    "client_id": "string",
+    "slug": "string",
+    "name": "string",
+    "html_url": "string",
+    "owner": {
+      "login": "string",
+      "id": "number",
+      "type": "string"
+    }
   },
   "label": {
     "data_categories": [
@@ -126,10 +144,10 @@ Response schema:
       }
     ],
     "notes": ["string"]
-  }
+  },
+  "error": "string | null"
 }
 ```
-
 
 ## 📘 API Response Reference
 
@@ -140,11 +158,21 @@ Response schema:
 | `resolved` | Whether the requested GitHub App slug was successfully resolved via the GitHub API | `true` \| `false` |
 | `fallback` | Whether PermLens fell back to its own GitHub App permissions | `true` \| `false` |
 | `rate_limits.unauthenticated` | Whether the unauthenticated GitHub API rate limit was exceeded | `true` \| `false` |
-| `rate_limits.authenticated` | Whether the GitHub App–authenticated API rate limit was exceeded | `true` \| `false` |
+| `rate_limits.authenticated` | Whether the GitHub App-authenticated API rate limit was exceeded | `true` \| `false` |
 | `api.unauthenticated_hit` | Whether an unauthenticated GitHub API request was made | `true` \| `false` |
-| `api.authenticated_hit` | Whether a GitHub App–authenticated request was made (typically fallback) | `true` \| `false` |
+| `api.authenticated_hit` | Whether a GitHub App-authenticated request was made (typically fallback) | `true` \| `false` |
 | `cache.hit` | Whether the response was served from cache | `true` \| `false` |
 | `cache.cached_at` | Timestamp of cached response generation | ISO 8601 timestamp \| `null` |
+| `app` | GitHub App metadata included with the label | object |
+| `app.id` | GitHub App numeric identifier | number |
+| `app.client_id` | GitHub App client id | string |
+| `app.slug` | GitHub App marketplace slug | string |
+| `app.name` | GitHub App display name | string |
+| `app.html_url` | GitHub App marketplace URL | string |
+| `app.owner` | GitHub App owner metadata | object |
+| `app.owner.login` | Owner login | string |
+| `app.owner.id` | Owner numeric identifier | number |
+| `app.owner.type` | Owner type | `User` \| `Organization` \| other string |
 | `label.data_categories` | Data access categories derived from declared permissions | array of objects |
 | `label.data_categories[].key` | Internal category identifier | string |
 | `label.data_categories[].label` | Human-readable category name | string |
@@ -155,7 +183,7 @@ Response schema:
 | `label.permissions[].name` | Permission name | string |
 | `label.permissions[].access` | Permission access level | `read` \| `write` |
 | `label.notes` | Informational notes about label generation | array of strings |
-| `error` | Error message when label generation fails | string \| absent |
+| `error` | Error message when label generation fails | string \| `null` |
 
 ### Resolution behavior
 
@@ -182,18 +210,51 @@ Response schema:
 - if both are `true`, no app data can be fetched
 
 
-## 🚧 Project status
+## 🚀 Deployment
 
-PermLens is in **early development**.
+PermLens ships with Vercel-ready configuration for both the backend API and the frontend. You can deploy them independently or front the backend API with your own reverse proxy.
 
-Version **v0.3.0** introduces:
+### Environment variables
 
-- In-memory caching for label lookups
-- Explicit cache and API metadata in response payloads
-- Clear unauthenticated vs authenticated rate limit reporting
-- Improved frontend UX for cached, fallback, and rate-limited cases
+Backend API:
 
-APIs and schemas may evolve as the project matures.
+- `GH_APP_KEY` (required): GitHub App private key (PEM). Newlines can be escaped as `\n`.
+- `GH_APP_ID` (required): GitHub App id.
+- `GH_INSTALL_ID` (required): GitHub App installation id.
+- `GH_USER_AGENT` (optional): User agent string for GitHub API requests.
+- `PORT` (optional for local dev): API port (defaults to `3000`).
+
+Frontend:
+
+- `VITE_API_URL` (required): Base URL of the deployed API (example: `https://api.example.com`).
+
+### Vercel backend API deployment
+
+- Deploy from the repository root so the serverless function at `api/[...path].js` can mount the Express app.
+- Configure the environment variables listed above.
+- The API is served under `/api/*`.
+
+### Vercel frontend deployment
+
+- Deploy the `frontend` folder as a separate Vercel project.
+- Build command: `npm run build`
+- Output directory: `dist`
+- Configure `VITE_API_URL` to point at your API deployment.
+
+
+## 🟢 Project status
+
+PermLens is in stable release **v1.0.0**.
+
+The API response schema is stable, and deployments are ready for production use. Future releases will extend capabilities while preserving the v1 contract.
+
+
+## ✨ Release highlights (v1.0.0)
+
+- Stable v1 schema with full app identity fields for audits and tooling
+- Response envelope now surfaces cache hits and rate-limit status explicitly
+- Predictable fallback + error signaling when a slug cannot be resolved
+- Vercel-ready deployment split for backend API and frontend with env guidance
 
 
 ## 🔐 Security and privacy

@@ -13,6 +13,18 @@
     "hit": "boolean",
     "cached_at": "ISO_8601 string | null"
   },
+  "app": {
+    "id": "number",
+    "client_id": "string",
+    "slug": "string",
+    "name": "string",
+    "html_url": "string",
+    "owner": {
+      "login": "string",
+      "id": "number",
+      "type": "string"
+    }
+  },
   "label": {
     "data_categories": [
       {
@@ -30,5 +42,6 @@
       }
     ],
     "notes": ["string"]
-  }
+  },
+  "error": "string | null"
 }
