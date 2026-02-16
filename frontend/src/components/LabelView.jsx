@@ -28,8 +28,9 @@ function LabelView({ label, meta, slug }) {
                 </div>
 
                 <div className="pointer-events-none absolute right-0 top-8 w-56 rounded bg-black/90 px-3 py-2 text-xs text-gray-200 opacity-0 shadow-lg transition-opacity group-hover:opacity-100">
-                  Showing a cached privacy label.<br />
-                  Cached {cacheMinutesAgo} minute{cacheMinutesAgo !== 1 && "s"} ago.
+                  Showing a cached privacy label.
+                  <br />
+                  Cached {cacheMinutesAgo} minute{cacheMinutesAgo !== 1 && "s"}{" "} ago.
                 </div>
               </div>
             )}
@@ -56,7 +57,7 @@ function LabelView({ label, meta, slug }) {
       <header className="mb-6">
         <h2 className="text-lg font-semibold sm:text-xl">Privacy Label</h2>
         <div
-          className={`mt-2 inline-flex items-center rounded px-3 py-1 text-sm font-medium ${styles}`}
+          className={`mt-2 inline-flex max-w-full flex-wrap items-center rounded px-3 py-1 text-sm font-medium break-words ${styles}`}
         >
           Overall sensitivity: {label.overall_sensitivity}
         </div>
@@ -69,9 +70,9 @@ function LabelView({ label, meta, slug }) {
         <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 [@media(max-height:700px)]:grid-cols-2">
           {label.data_categories.map((cat) => (
             <li key={cat.key} className="rounded bg-black/30 p-3">
-              <div className="flex items-center justify-between">
-                <span className="font-medium">{cat.label}</span>
-                <span className="text-xs text-gray-400">
+              <div className="flex items-center justify-between gap-2">
+                <span className="font-medium min-w-0">{cat.label}</span>
+                <span className="text-xs text-gray-400 shrink-0">
                   {cat.sensitivity}
                 </span>
               </div>
