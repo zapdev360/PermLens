@@ -34,7 +34,7 @@ PermLens helps developers and reviewers understand what data a GitHub App *decla
   - [Vercel backend API deployment](#vercel-backend-api-deployment)
   - [Vercel frontend deployment](#vercel-frontend-deployment)
 - [🟢 Project status](#-project-status)
-- [✨ Release highlights (v1.0.0)](#-release-highlights-v100)
+- [✨ Release highlights (v1.1.0)](#-release-highlights-v110)
 - [🔐 Security and privacy](#-security-and-privacy)
 - [🏷️ Branding](#️-branding)
 - [⚖️ License](#️-license)
@@ -244,17 +244,17 @@ Frontend:
 
 ## 🟢 Project status
 
-PermLens is in stable release **v1.0.0**.
+PermLens is in stable release **v1.1.0**.
 
 The API response schema is stable, and deployments are ready for production use. Future releases will extend capabilities while preserving the v1 contract.
 
 
-## ✨ Release highlights (v1.0.0)
+## ✨ Release highlights (v1.1.0)
 
-- Stable v1 schema with full app identity fields for audits and tooling
-- Response envelope now surfaces cache hits and rate-limit status explicitly
-- Predictable fallback + error signaling when a slug cannot be resolved
-- Vercel-ready deployment split for backend API and frontend with env guidance
+- Desktop sidebar layout with collapsible navigation and icon cues
+- Mobile layout focuses on the top nav for legal routes
+- Home link now hides when already on the home page
+- Added Lucide icon dependency for navigation visuals
 
 
 ## 🔐 Security and privacy

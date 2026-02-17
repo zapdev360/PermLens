@@ -1,8 +1,11 @@
 import { useState } from "react";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useLocation } from "react-router-dom";
 
 function TopNav() {
   const [menuOpen, setMenuOpen] = useState(false);
+
+  const location = useLocation();
+  const isHome = location.pathname === "/";
 
   const closeMenu = () => setMenuOpen(false);
 
@@ -33,23 +36,27 @@ function TopNav() {
             </svg>
           </button>
 
-          <Link
-            to="/"
-            onClick={closeMenu}
-            className="hidden text-sm font-semibold uppercase tracking-wide text-gray-200 hover:text-white md:inline"
-          >
-            Home
-          </Link>
+          {!isHome && (
+            <Link
+              to="/"
+              onClick={closeMenu}
+              className="hidden text-sm font-semibold uppercase tracking-wide text-gray-200 hover:text-white md:inline"
+            >
+              Home
+            </Link>
+          )}
         </div>
 
         <div className="flex items-center gap-3">
-          <Link
-            to="/"
-            onClick={closeMenu}
-            className="text-sm font-semibold uppercase tracking-wide text-gray-200 hover:text-white md:hidden"
-          >
-            Home
-          </Link>
+          {!isHome && (
+            <Link
+              to="/"
+              onClick={closeMenu}
+              className="text-sm font-semibold uppercase tracking-wide text-gray-200 hover:text-white md:hidden"
+            >
+              Home
+            </Link>
+          )}
           <div className="hidden items-center gap-3 text-sm font-semibold uppercase tracking-wide text-gray-300 md:flex">
             <NavLink
               to="/tos"
@@ -103,17 +110,19 @@ function TopNav() {
           </button>
         </div>
         <div className="flex flex-col gap-2">
-          <NavLink
-            to="/"
-            onClick={closeMenu}
-            className={({ isActive }) =>
-              `rounded px-3 py-2 hover:text-white ${
-                isActive ? "bg-white/10 text-white" : ""
-              }`
-            }
-          >
-            Home
-          </NavLink>
+          {!isHome && (
+            <NavLink
+              to="/"
+              onClick={closeMenu}
+              className={({ isActive }) =>
+                `rounded px-3 py-2 hover:text-white ${
+                  isActive ? "bg-white/10 text-white" : ""
+                }`
+              }
+            >
+              Home
+            </NavLink>
+          )}
           <NavLink
             to="/tos"
             onClick={closeMenu}
